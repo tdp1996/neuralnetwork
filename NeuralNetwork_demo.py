@@ -1,51 +1,51 @@
 from typing import Union
+from dataobjects import Tensor, TensorBatch, LayerWeight, LayerBias
 
-def forward(input : Union[list[list[Union[float,int]]],list], 
-            weights:list[list[list[Union[float,int]]]], 
-            bias: list[list[Union[float,int]]]) ->Union[list,Union[float,int]]:
-    predict = []
-    if all(isinstance(element,list) for element in input):
-        for single_input in input:
-            pre_act_all_nodes_1 = pre_activation_all_nodes(single_input, weights[0], bias[0], 3)
-            relu_act_output_1 = relu_activation(pre_act_all_nodes_1)
-            pre_act_all_nodes_2 = pre_activation_all_nodes(relu_act_output_1, weights[1], bias[1], 1)
-            predict.append(pre_act_all_nodes_2)
-    else:
-        pre_act_all_nodes_1 = pre_activation_all_nodes(input, weights[0], bias[0], 3)
-        relu_act_output_1 = relu_activation(pre_act_all_nodes_1)
-        predict = pre_activation_all_nodes(relu_act_output_1, weights[1], bias[1], 1)
-    return predict
+def forward(input_batch: TensorBatch, 
+            model_weights:list[LayerWeight],
+            model_bias: list[LayerBias]) ->TensorBatch:
+    assert len(model_weights)==len(model_bias)
+    num_layers = len(model_weights)
+    model_output = TensorBatch(value=[])
+    for single_input in input_batch.value:
+        for layer_i in range(num_layers):
+            pre_activation_all_nodes_ = pre_activation_all_nodes(input=single_input,
+                                                                layer_weight=model_weights[layer_i],
+                                                                layer_bias=model_bias[layer_i])
+            if layer_i != num_layers-1:
+                pre_activation_all_nodes_ = relu_activation(pre_activation_all_nodes_)
+        model_output.value.append(pre_activation_all_nodes_)
+     
+    return model_output
 
-def relu_activation(pre_act_all_nodes:list[float,int]) ->list[float,int]:
-    relu_output = [pre_single_act_node if pre_single_act_node > 0  else 0 for pre_single_act_node in pre_act_all_nodes]
+def relu_activation(pre_act_all_nodes:list[Tensor]) ->list[Tensor]:
+    relu_output = [pre_single_act_node if pre_single_act_node.value > 0  else Tensor(value=0) 
+                   for pre_single_act_node in pre_act_all_nodes]
     return relu_output
 
-def pre_activation_all_nodes(input: list[Union[float,int]], 
-                            weights: list[list[Union[float,int]]],
-                            bias: list[Union[float,int]],
-                            num_nodes: int) ->Union[list[float,int],Union[float,int]]: 
+def pre_activation_all_nodes(input: list[Tensor], 
+                            layer_weight: LayerWeight,
+                            layer_bias: LayerBias,
+                            ) ->list[Tensor]: 
      
     pre_act_all_nodes = []
-    if num_nodes > 1:
-        for weight_node_i, bias_i in zip(weights,bias):
-            pre_act_note_i = pre_activation_node_i(input, weight_node_i, bias_i)
-            pre_act_all_nodes.append(pre_act_note_i)           
-    else:
-        pre_act_all_nodes = pre_activation_node_i(input, weights, bias[0])
+    bias_dim = len(layer_bias.value)
+    assert len(layer_weight.value) == bias_dim
+    for i in range(bias_dim):
+        pre_act_single_node = pre_activation_node_i(input=input,
+                                                  weights_node_i=layer_weight.value[i],
+                                                  bias_i=layer_bias.value[i])
+        pre_act_all_nodes.append(pre_act_single_node)
     return pre_act_all_nodes
 
-def pre_activation_node_i(input: list[Union[float,int]],
-                        weights_node_i: list[Union[float,int]],
-                        bias_i: Union[float,int]) -> Union[float,int]: 
-    output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_i
-    return output
-
-weights =  [[[0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5]],
-                [0.5, 0.5, 0.5]]               
-bias = [[0.5, 0.5, 0.5],[0.5]]
-print(forward([1, 1], weights, bias))
+def pre_activation_node_i(input: list[Tensor],
+                        weights_node_i: list[Tensor],
+                        bias_i: Tensor) -> Tensor:
+    if len(input) != len(weights_node_i):
+        raise ValueError("The length of input and weights_node_i should be the same")
+    else:
+        output = sum(a.value*b.value for a,b in zip(input, weights_node_i)) + bias_i.value
+    return Tensor(value=output)
 
 
 
