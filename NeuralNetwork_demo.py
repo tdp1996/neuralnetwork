@@ -1,6 +1,6 @@
 from typing import Union
 
-def forward(input : Union[list[list[Union[float,int]]],list], 
+def forward(input :list[Union[float,int]], 
             weights:list[list[list[Union[float,int]]]], 
             bias: list[list[Union[float,int]]]) ->Union[list,Union[float,int]]:
     predict = []
@@ -21,31 +21,33 @@ def relu_activation(pre_act_all_nodes:list[float,int]) ->list[float,int]:
     return relu_output
 
 def pre_activation_all_nodes(input: list[Union[float,int]], 
-                            weights: list[list[Union[float,int]]],
-                            bias: list[Union[float,int]],
-                            num_nodes: int) ->Union[list[float,int],Union[float,int]]: 
+                            weights_layer: list[list[Union[float,int]]],
+                            bias_layer: list[Union[float,int]],
+                            ) ->list[float,int]: 
      
-    pre_act_all_nodes = []
-    if num_nodes > 1:
-        for weight_node_i, bias_i in zip(weights,bias):
-            pre_act_note_i = pre_activation_node_i(input, weight_node_i, bias_i)
-            pre_act_all_nodes.append(pre_act_note_i)           
-    else:
-        pre_act_all_nodes = pre_activation_node_i(input, weights, bias[0])
+    assert len(weights_layer) == len(bias_layer), "The length of weights_layer and bias_layer should be the same"
+    pre_act_all_nodes = []    
+    for weights_node_i, bias_node_i in zip(weights_layer,bias_layer):
+        pre_act_note_i = pre_activation_node_i(input, weights_node_i, bias_node_i)
+        pre_act_all_nodes.append(pre_act_note_i)          
+    
     return pre_act_all_nodes
 
 def pre_activation_node_i(input: list[Union[float,int]],
                         weights_node_i: list[Union[float,int]],
-                        bias_i: Union[float,int]) -> Union[float,int]: 
-    output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_i
+                        bias_node_i: Union[float,int]) -> Union[float,int]: 
+    assert len(input) == len(weights_node_i), "The length of input and weights_node_i should be the same"
+    output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_node_i
     return output
 
-weights =  [[[0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5]],
-                [0.5, 0.5, 0.5]]               
-bias = [[0.5, 0.5, 0.5],[0.5]]
-print(forward([1, 1], weights, bias))
+if __name__ == "__main__":
+    weights =  [[[0.5, 0.5, 0.5],
+                    [0.5, 0.5, 0.5],
+                    [0.5, 0.5, 0.5]],
+                    [0.5, 0.5, 0.5]]               
+    bias = [[0.5, 0.5, 0.5],[0.5]]
+    print(forward([1, 1], weights, bias))
+    
 
 
 
