@@ -1,6 +1,6 @@
 from typing import Union
 
-def forward(input : Union[list[list[Union[float,int]]],list], 
+def forward(input :list[Union[float,int]], 
             weights:list[list[list[Union[float,int]]]], 
             bias: list[list[Union[float,int]]]) ->Union[list,Union[float,int]]:
     predict = []
