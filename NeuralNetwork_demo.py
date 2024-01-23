@@ -37,15 +37,18 @@ def pre_activation_all_nodes(input: list[Union[float,int]],
 def pre_activation_node_i(input: list[Union[float,int]],
                         weights_node_i: list[Union[float,int]],
                         bias_i: Union[float,int]) -> Union[float,int]: 
+    
     output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_i
     return output
 
-weights =  [[[0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5]],
-                [0.5, 0.5, 0.5]]               
-bias = [[0.5, 0.5, 0.5],[0.5]]
-print(forward([1, 1], weights, bias))
+if __name__ == "__main__":
+    weights =  [[[0.5, 0.5, 0.5],
+                    [0.5, 0.5, 0.5],
+                    [0.5, 0.5, 0.5]],
+                    [0.5, 0.5, 0.5]]               
+    bias = [[0.5, 0.5, 0.5],[0.5]]
+    print(forward([1, 1], weights, bias))
+    
 
 
 
