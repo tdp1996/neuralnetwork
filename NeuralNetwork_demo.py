@@ -3,17 +3,20 @@ from typing import Union
 def forward(input :list[Union[float,int]], 
             weights:list[list[list[Union[float,int]]]], 
             bias: list[list[Union[float,int]]]) ->list[Union[float,int]]:
-    
-    predict = input
+      
     num_layers = len(weights)
-    for layer_i in range(num_layers):
-        pre_act_all_nodes = pre_activation_all_nodes(predict, weights[layer_i], bias[layer_i])
-        if len(weights[num_layers-1]) != 1:
-            relu = relu_activation(pre_act_all_nodes)
-            predict = relu
-        else:
-            predict = pre_act_all_nodes
-    return predict
+    try:
+        for layer_i in range(num_layers):       
+            pre_act_all_nodes = pre_activation_all_nodes(input, weights[layer_i], bias[layer_i])
+            if len(weights[num_layers-1]) != 1:
+                relu = relu_activation(pre_act_all_nodes)
+                input = relu
+            else:
+                input = pre_act_all_nodes
+        return input
+    except AssertionError as e:
+        raise e
+    
         
 
 def relu_activation(pre_act_all_nodes:list[float,int]) ->list[float,int]:
@@ -44,9 +47,9 @@ if __name__ == "__main__":
     weights =  [[[0.5, 0.5, 0.5],
                     [0.5, 0.5, 0.5],
                     [0.5, 0.5, 0.5]],
-                    [0.5, 0.5, 0.5]]               
+                    [[0.5, 0.5, 0.5]]]               
     bias = [[0.5, 0.5, 0.5],[0.5]]
-    print(forward([1, 1], weights, bias))
+    print(forward([1, 1, 1], weights, bias))
     
 
 
