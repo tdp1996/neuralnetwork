@@ -21,17 +21,16 @@ def relu_activation(pre_act_all_nodes:list[float,int]) ->list[float,int]:
     return relu_output
 
 def pre_activation_all_nodes(input: list[Union[float,int]], 
-                            weights: list[list[Union[float,int]]],
-                            bias: list[Union[float,int]],
-                            num_nodes: int) ->Union[list[float,int],Union[float,int]]: 
+                            weights_layer: list[list[Union[float,int]]],
+                            bias_layer: list[Union[float,int]],
+                            ) ->list[float,int]: 
      
-    pre_act_all_nodes = []
-    if num_nodes > 1:
-        for weight_node_i, bias_i in zip(weights,bias):
-            pre_act_note_i = pre_activation_node_i(input, weight_node_i, bias_i)
-            pre_act_all_nodes.append(pre_act_note_i)           
-    else:
-        pre_act_all_nodes = pre_activation_node_i(input, weights, bias[0])
+    assert len(weights_layer) == len(bias_layer), "The length of weights_layer and bias_layer should be the same"
+    pre_act_all_nodes = []    
+    for weights_node_i, bias_node_i in zip(weights_layer,bias_layer):
+        pre_act_note_i = pre_activation_node_i(input, weights_node_i, bias_node_i)
+        pre_act_all_nodes.append(pre_act_note_i)          
+    
     return pre_act_all_nodes
 
 def pre_activation_node_i(input: list[Union[float,int]],
