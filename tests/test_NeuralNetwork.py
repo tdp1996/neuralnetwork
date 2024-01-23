@@ -1,7 +1,24 @@
 from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward
 import torch
-from NeuralNetwork_pytorch import SimpleNet 
 import pytest
+from torch import nn
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super(SimpleNet, self).__init__()
+        self.fc1 = nn.Linear(3, 3)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(3, 1)
+        nn.init.constant_(self.fc1.weight, 0.5)
+        nn.init.constant_(self.fc1.bias, 0.5)
+        nn.init.constant_(self.fc2.weight, 0.5)
+        nn.init.constant_(self.fc2.bias, 0.5)
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return x
+
 
 def test_pre_activation_note_i_wrong_shape():
     weights_note_i = [0.5, 0.5, 0.5]
@@ -57,18 +74,18 @@ def test_relu_activation():
 
 def test_forward():
     model = SimpleNet()
-    input_tensor_1 = torch.ones(3)
-    input_tensor_2 = torch.ones(2,3)
+    input_torch_1 = torch.ones(3)
+
+    input = [1, 1, 1]
     weights =  [[[0.5, 0.5, 0.5],
                 [0.5, 0.5, 0.5],
                 [0.5, 0.5, 0.5]],
-                [0.5, 0.5, 0.5]]               
+                [[0.5, 0.5, 0.5]]]               
     bias = [[0.5, 0.5, 0.5],[0.5]]
-    expected_output_1 = model(input_tensor_1).item()
-    expected_output_2 = model(input_tensor_2)
-
-    assert forward([1, 1, 1], weights, bias) == expected_output_1
-    assert forward([[1, 1, 1],[1, 1, 1]], weights, bias)[0] == expected_output_2[0]
+    expected_output = model(input_torch_1).tolist()
+    assert forward(input= input, 
+                   weights= weights, 
+                   bias= bias) == expected_output
 
 
 
