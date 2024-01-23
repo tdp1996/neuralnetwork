@@ -36,9 +36,9 @@ def pre_activation_all_nodes(input: list[Union[float,int]],
 
 def pre_activation_node_i(input: list[Union[float,int]],
                         weights_node_i: list[Union[float,int]],
-                        bias_i: Union[float,int]) -> Union[float,int]: 
-    
-    output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_i
+                        bias_node_i: Union[float,int]) -> Union[float,int]: 
+    assert len(input) == len(weights_node_i), "The length of input and weights_node_i should be the same"
+    output = sum(a*b for a,b in zip(input, weights_node_i)) + bias_node_i
     return output
 
 if __name__ == "__main__":

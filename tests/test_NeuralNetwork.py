@@ -1,11 +1,23 @@
 from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward
 import torch
 from NeuralNetwork_pytorch import SimpleNet 
+import pytest
+
+def test_pre_activation_note_i_wrong_shape():
+    weights_note_i = [0.5, 0.5, 0.5]
+    bias_note_i = 0.5
+    input = [1, 1]
+    with pytest.raises(AssertionError, match="The length of input and weights_node_i should be the same"):
+        # Call the function that is expected to raise ValueError
+        pre_activation_node_i(
+        input=input,
+        weights_node_i=weights_note_i,
+        bias_node_i=bias_note_i
+    )
 
 def test_pre_activation_note_i():
     weights_note_i = [0.5, 0.5, 0.5]
     bias_note_i = 0.5
-    assert pre_activation_node_i([1, 1], weights_note_i, bias_note_i) == 1.5
     assert pre_activation_node_i([1, -1, 1], weights_note_i, bias_note_i) == 1
 
 
