@@ -18,9 +18,10 @@ class SimpleNet(nn.Module):
         x = self.relu(x)
         x = self.fc2(x)
         return x
-    
-model = SimpleNet()
-input_tensor_1 = torch.ones(2)
-print(input_tensor_1)
+if __name__ == "__main__":   
+    model = SimpleNet()
+    input_tensor_1 = torch.ones(3)
+    output = model(input_tensor_1)
+    print(output.tolist())
 
 
