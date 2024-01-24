@@ -72,23 +72,17 @@ def test_relu_activation():
     assert relu_activation([1, -1, -1]) == [1, 0, 0]
 
 def test_forward_wrong_shape():
-    input_1 = [1, 1]
-    input_2 = [1, 1, 1]
-    weights =  [[[0.5, 0.5, 0.5],
+    input = [1, 1, 1]
+    weights_model =  [[[0.5, 0.5, 0.5],
                 [0.5, 0.5, 0.5],
                 [0.5, 0.5, 0.5]],
                 [[0.5, 0.5, 0.5]]]               
-    bias_1 = [[0.5, 0.5, 0.5],[0.5]]
-    bias_2 = [[0.5, 0.5, 0.5],[0.5, 0.5, 0.5]]
-    with pytest.raises(AssertionError, match="The length of input and weights_node_i should be the same"):
-        forward(input= input_1, 
-                weights= weights, 
-                bias= bias_1)
+    bias_model = [[0.5, 0.5, 0.5],[0.5], [0.5]]
 
-    with pytest.raises(AssertionError, match="The length of weights_layer and bias_layer should be the same"):
-        forward(input= input_2, 
-                weights= weights, 
-                bias= bias_2)
+    with pytest.raises(AssertionError, match="The number of weights layers and bias layers must be the same"):
+        forward(input= input, 
+                weights_model= weights_model, 
+                bias_model= bias_model)
 
 def test_forward():
     model = SimpleNet()
@@ -102,8 +96,8 @@ def test_forward():
     bias = [[0.5, 0.5, 0.5],[0.5]]
     expected_output = model(input_torch_1).tolist()
     assert forward(input= input, 
-                   weights= weights, 
-                   bias= bias) == expected_output
+                   weights_model= weights, 
+                   bias_model= bias) == expected_output
 
 
 
