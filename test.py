@@ -172,10 +172,13 @@
 # b = [1,1]
 # for i,j in zip(a,b):
 #     print(i,j)
-layers = [(3,3),(3,1),(3,3), (3,1)]
-for i in layers:
-    print(i)
-    if i == layers[-1]:
-        break
+# layers = [(3,3),(3,1),(3,3), (3,1)]
+# for i in layers:
+#     print(i)
+#     if i == layers[-1]:
+#         break
+a = (1,2)
+in_channel, out_channel = a
+print(in_channel, out_channel)
 
 

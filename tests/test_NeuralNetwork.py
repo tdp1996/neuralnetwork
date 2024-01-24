@@ -41,16 +41,27 @@ def test_pre_activation_note_i():
    
 
 def test_pre_activation_all_nodes():
-    weights_layer =  [[0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5],
-                [0.5, 0.5, 0.5]]
-    bias_layer = [0.5, 0.5, 0.5]
+    num_features = (3,3)
     input = [1, 1, 1]
+    init_weight = 0.5
+    init_bias = 0.5
     assert pre_activation_all_nodes(
         input=input,
-        weights_layer=weights_layer,
-        bias_layer=bias_layer
-    ) == [2, 2, 2]
+        num_features=num_features,
+        init_weight=init_weight,
+        init_bias=init_bias
+        ) == [2, 2, 2]
+
+def test_pre_activation_all_nodes_error():
+    input = [1, 1, 1]
+    num_features = (3,1,3)
+    init_weight = 0.5
+    init_bias = 0.5
+    with pytest.raises(AssertionError, match="The length of elements must be 2"):
+        pre_activation_all_nodes(input= input, 
+                num_features=num_features, 
+                init_weight=init_weight,
+                init_bias=init_bias)
    
     
 
@@ -59,32 +70,18 @@ def test_relu_activation():
     assert relu_activation([1, -1, -1]) == [1, 0, 0]
 
 
-def test_forward_error():
-    input = [1, 1, 1]
-    layers = [(3,3), (3,1,3)]
-    init_weights = 0.5
-    init_bias = 0.5
-    with pytest.raises(AssertionError, match="The length of elements must be 2"):
-        forward(input= input, 
-                layers=layers, 
-                init_weights=init_weights,
-                init_bias=init_bias)
- 
-
-
-
 def test_forward():
     model = SimpleNet()
     input_torch_1 = torch.ones(3)
 
     input = [1, 1, 1]
     layers = [(3,3), (3,1)]
-    init_weights = 0.5
+    init_weight = 0.5
     init_bias = 0.5
     expected_output = model(input_torch_1).tolist()
     assert forward(input= input, 
                 layers=layers, 
-                init_weights=init_weights,
+                init_weight=init_weight,
                 init_bias=init_bias
                 ) == expected_output
 
@@ -96,11 +93,11 @@ def test_forward_batch_processing():
 
     input = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     layers = [(3,3),(3,1)]
-    init_weights = 0.5
+    init_weight = 0.5
     init_bias = 0.5
     predict = forward_batch_processing(batch_input= input, 
                    layers=layers, 
-                   init_weights=init_weights,
+                   init_weight=init_weight,
                    init_bias=init_bias) 
     
     assert predict == expected_output
@@ -113,7 +110,7 @@ def test_forward_batch_processing_wrong_shape():
     with pytest.raises(AssertionError, match="The length of elemets must be the same"):
         forward_batch_processing(batch_input= input, 
                    layers=layers, 
-                   init_weights=init_weights,
+                   init_weight=init_weights,
                    init_bias=init_bias)
 
 
