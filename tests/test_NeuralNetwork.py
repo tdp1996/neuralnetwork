@@ -1,4 +1,4 @@
-from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, single_forward, batch_processing_forward
+from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward, forward_batch_processing
 
 import torch
 import pytest
@@ -8,8 +8,9 @@ class SimpleNet(nn.Module):
     def __init__(self):
         super(SimpleNet, self).__init__()
         self.fc1 = nn.Linear(3, 3)
-        self.relu = nn.ReLU()
         self.fc2 = nn.Linear(3, 1)
+        self.relu = nn.ReLU()
+        
         nn.init.constant_(self.fc1.weight, 0.5)
         nn.init.constant_(self.fc1.bias, 0.5)
         nn.init.constant_(self.fc2.weight, 0.5)
@@ -58,57 +59,59 @@ def test_relu_activation():
     assert relu_activation([1, -1, -1]) == [1, 0, 0]
 
 
-def test_single_forward_wrong_shape():
-    input = [1, 1]
-    layers = [(3,3),(3,1)]
+def test_forward_error():
+    input = [1, 1, 1]
+    layers = [(3,3), (3,1,3)]
     init_weights = 0.5
     init_bias = 0.5
-    
-    with pytest.raises(AssertionError, match="The length of input and weights_node_i should be the same"):
-        single_forward(input= input, 
+    with pytest.raises(AssertionError, match="The length of elements must be 2"):
+        forward(input= input, 
                 layers=layers, 
                 init_weights=init_weights,
                 init_bias=init_bias)
+ 
 
 
-def test_single_forward():
+
+def test_forward():
     model = SimpleNet()
     input_torch_1 = torch.ones(3)
 
     input = [1, 1, 1]
-    layers = [(3,3),(3,1)]
+    layers = [(3,3), (3,1)]
     init_weights = 0.5
     init_bias = 0.5
     expected_output = model(input_torch_1).tolist()
-    assert single_forward(input= input, 
+    assert forward(input= input, 
                 layers=layers, 
                 init_weights=init_weights,
                 init_bias=init_bias
                 ) == expected_output
 
 
-def test_batch_processing_forward():
+def test_forward_batch_processing():
     model = SimpleNet()
     input_torch = torch.ones(3,3)
-    
+    expected_output = model(input_torch).tolist()
+
     input = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]
     layers = [(3,3),(3,1)]
     init_weights = 0.5
     init_bias = 0.5
-    expected_output = model(input_torch).tolist()
-    predict = batch_processing_forward(batch_input= input, 
+    predict = forward_batch_processing(batch_input= input, 
                    layers=layers, 
                    init_weights=init_weights,
                    init_bias=init_bias) 
+    
     assert predict == expected_output
     
 def test_forward_batch_processing_wrong_shape():
-    input = [[1, 1], [1, 1]]
+    input = [[1, 1], [1, 1, 1]]
     layers = [(3,3),(3,1)]
     init_weights = 0.5
     init_bias = 0.5
-    with pytest.raises(AssertionError, match="The length of input and weights_node_i should be the same"):
-        batch_processing_forward(batch_input= input, 
+    with pytest.raises(AssertionError, match="The length of elemets must be the same"):
+        forward_batch_processing(batch_input= input, 
                    layers=layers, 
                    init_weights=init_weights,
                    init_bias=init_bias)
