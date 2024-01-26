@@ -1,6 +1,6 @@
 from torch import nn
-from prepare_data.prepare_data_Pytorch import CustomDataset
-from torch.utils.data import DataLoader
+# from prepare_data.prepare_data_Pytorch import CustomDataset
+# from torch.utils.data import DataLoader
 import torch
 
 class SimpleNet(nn.Module):
