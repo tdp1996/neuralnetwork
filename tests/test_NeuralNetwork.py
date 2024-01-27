@@ -1,4 +1,4 @@
-from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward
+from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward, forward_batch_processing
 import torch
 import pytest
 from torch import nn
@@ -99,5 +99,29 @@ def test_forward():
                    weights_model= weights, 
                    bias_model= bias) == expected_output
 
+def test_forward_batch_processing_wrong_shape():
+    input = [[1, 1, 1], [1, 1]]
+    weights =  [[[0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5]],
+                [[0.5, 0.5, 0.5]]]               
+    bias = [[0.5, 0.5, 0.5],[0.5]]
+    with pytest.raises(AssertionError, match="The length of elements must be the same"):
+        forward_batch_processing(batch_input= input, 
+                   weights_model= weights, 
+                   bias_model= bias)
 
+def test_forward_batch_procesing():
+    model = SimpleNet()
+    input_torch_1 = torch.ones(2,3)
 
+    input = [[1, 1, 1], [1, 1, 1]]
+    weights =  [[[0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5],
+                [0.5, 0.5, 0.5]],
+                [[0.5, 0.5, 0.5]]]               
+    bias = [[0.5, 0.5, 0.5],[0.5]]
+    expected_output = model(input_torch_1).tolist()
+    assert forward_batch_processing(batch_input= input, 
+                   weights_model= weights, 
+                   bias_model= bias) == expected_output

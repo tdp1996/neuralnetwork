@@ -1,5 +1,18 @@
 from typing import Union
 
+def forward_batch_processing(batch_input :list[list[Union[float,int]]], 
+            weights_model:list[list[list[Union[float,int]]]], 
+            bias_model: list[list[Union[float,int]]]) ->list[list[Union[float,int]]]:
+    
+    length = len(batch_input[0])
+    assert all(len(input) == length for input in batch_input), "The length of elements must be the same"
+    
+    batch_predict = []
+    for input in batch_input:
+        predict = forward(input, weights_model, bias_model)
+        batch_predict.append(predict)
+    return batch_predict
+
 def forward(input :list[Union[float,int]], 
             weights_model:list[list[list[Union[float,int]]]], 
             bias_model: list[list[Union[float,int]]]) ->list[Union[float,int]]:
