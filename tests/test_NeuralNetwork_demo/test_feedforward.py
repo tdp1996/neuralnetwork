@@ -1,4 +1,4 @@
-from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward
+from NeuralNetwork_demo.feedforward import pre_activation_node_i, pre_activation_all_nodes , forward
 import torch
 import pytest
 from torch import nn
@@ -65,11 +65,6 @@ def test_pre_activation_all_nodes():
         bias_layer=bias_layer
     ) == [2, 2, 2]
    
-    
-
-def test_relu_activation():
-    assert relu_activation([1, 1, 1]) == [1, 1, 1]
-    assert relu_activation([1, -1, -1]) == [1, 0, 0]
 
 def test_forward_wrong_shape():
     input = [1, 1, 1]

@@ -1,4 +1,5 @@
 from typing import Union
+from activation_function import relu_activation
 
 def forward(input :list[Union[float,int]], 
             weights_model:list[list[list[Union[float,int]]]], 
@@ -12,12 +13,8 @@ def forward(input :list[Union[float,int]],
         if layer_i < num_layers - 1:
             activation = relu_activation(pre_act_all_nodes)
     return pre_act_all_nodes
+       
 
-        
-
-def relu_activation(pre_act_all_nodes:list[float,int]) ->list[float,int]:
-    relu_output = [pre_single_act_node if pre_single_act_node > 0  else 0 for pre_single_act_node in pre_act_all_nodes]
-    return relu_output
 
 def pre_activation_all_nodes(input: list[Union[float,int]], 
                             weights_layer: list[list[Union[float,int]]],
