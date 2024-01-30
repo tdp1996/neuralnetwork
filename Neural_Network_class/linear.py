@@ -1,6 +1,5 @@
 from typing import Union
 import random
-from activation_function import ReLU
 
 class Linear:
     def __init__(self,in_features: int, out_features: int, init_weight=None, init_bias=None):
@@ -8,20 +7,12 @@ class Linear:
         self.out_features = out_features
         self.init_weight = init_weight
         self.init_bias = init_bias
-        self.weights_layer = self.initialize_weights()
-        self.bias_layer = self.initialize_bias()
-
-    def initialize_weights(self) ->list[list[Union[float,int]]]:   
-        if self.init_weight is not None:
-            return [[self.init_weight] * self.in_features] * self.out_features          
-        else:
-            return [[random.uniform(-1, 1)] * self.in_features] * self.out_features
-    
-    def initialize_bias(self) ->list[Union[float,int]]:
-        if self.init_bias is not None:
-            return [self.init_bias] * self.out_features
-        else:
-            return [random.uniform(-1, 1)] * self.out_features
+        self.weights_layer, self.bias_layer = self.initialize_parameters()
+       
+    def initialize_parameters(self):
+        weights_layer = [[random.uniform(-1, 1)] * self.in_features] * self.out_features
+        bias_layer = [random.uniform(-1, 1)] * self.out_features
+        return weights_layer, bias_layer
     
     def pre_activation_node(self, sample, weight_node, bias_node) ->Union[float,int]:
         assert len(sample) == len(weight_node), "The shape of input and weights should be the same"
@@ -46,9 +37,7 @@ class Linear:
         
 if __name__ == "__main__":
     linear = Linear(3, 3, 0.5, 0.5)
-    relu = ReLU()
     output = linear([1,1,1])
-    output = relu(output)
     print(output)
     
     
