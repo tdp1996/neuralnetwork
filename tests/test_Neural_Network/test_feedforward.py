@@ -1,7 +1,7 @@
-from NeuralNetwork_demo import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward, forward_batch_processing
-import torch
 import pytest
+import torch
 from torch import nn
+from Neural_Network.feedforward import pre_activation_node_i, pre_activation_all_nodes ,relu_activation, forward, forward_batch_processing
 
 class SimpleNet(nn.Module):
     def __init__(self):
@@ -27,7 +27,7 @@ def test_pre_activation_note_i_wrong_shape():
     with pytest.raises(AssertionError, match="The length of input and weights_node_i should be the same"):
         # Call the function that is expected to raise ValueError
         pre_activation_node_i(
-        input=input,
+        input_values=input,
         weights_node_i=weights_note_i,
         bias_node_i=bias_note_i
     )
@@ -47,7 +47,7 @@ def test_pre_activation_all_nodes_wrong_shape():
     with pytest.raises(AssertionError, match="The length of weights_layer and bias_layer should be the same"):
         # Call the function that is expected to raise ValueError
         pre_activation_all_nodes(
-        input=input,
+        input_values=input,
         weights_layer=weights_layer,
         bias_layer=bias_layer
     )
@@ -60,7 +60,7 @@ def test_pre_activation_all_nodes():
     bias_layer = [0.5, 0.5, 0.5]
     input = [1, 1, 1]
     assert pre_activation_all_nodes(
-        input=input,
+        input_values=input,
         weights_layer=weights_layer,
         bias_layer=bias_layer
     ) == [2, 2, 2]
@@ -80,7 +80,7 @@ def test_forward_wrong_shape():
     bias_model = [[0.5, 0.5, 0.5],[0.5], [0.5]]
 
     with pytest.raises(AssertionError, match="The number of weights layers and bias layers must be the same"):
-        forward(input= input, 
+        forward(input_values= input, 
                 weights_model= weights_model, 
                 bias_model= bias_model)
 
@@ -95,7 +95,7 @@ def test_forward():
                 [[0.5, 0.5, 0.5]]]               
     bias = [[0.5, 0.5, 0.5],[0.5]]
     expected_output = model(input_torch_1).tolist()
-    assert forward(input= input, 
+    assert forward(input_values= input, 
                    weights_model= weights, 
                    bias_model= bias) == expected_output
 
